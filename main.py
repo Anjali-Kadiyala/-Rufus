@@ -1,15 +1,25 @@
-# main.py
+from element_collector import collect_elements
+from llm_integration import ask_chatgpt
+from response_parser import parse_chatgpt_response
+from scraper import scrape_elements
 
-from agent import RufusAgent
+def main(url, user_prompt):
 
-def main():
+    elements = collect_elements(url)
+    chatgpt_response = ask_chatgpt(elements, user_prompt)
+    print("ChatGPT Response:")
+    print(chatgpt_response)
 
-    agent = RufusAgent()
-    url = "https://sf.gov"
-    tags = ['h1', 'h2', 'p', 'div']
-    result = agent.run(url, tags=tags)
-    
-    print(result)
+    parsed_elements = parse_chatgpt_response(chatgpt_response)
+    print("Parsed elements to scrape:")
+    print(parsed_elements)
 
+    scraped_content = scrape_elements(url, parsed_elements)
+    print("Scraped Content:")
+    print(scraped_content)
+
+# Example usage
 if __name__ == "__main__":
-    main()
+    url = "https://www.sf.gov/"
+    user_prompt = "scrape the news from the SF website"
+    main(url, user_prompt)
