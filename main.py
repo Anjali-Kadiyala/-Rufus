@@ -14,7 +14,7 @@ def main(url, user_prompt):
     print("Parsed elements to scrape:")
     print(parsed_elements)
 
-    scraped_content = scrape_elements(url, parsed_elements)
+    scraped_content = scrape_elements(url, parsed_elements, max_depth=2)
     print("Scraped Content:")
     print(scraped_content)
 
