@@ -1,5 +1,3 @@
-# rufus/scraper.py
-
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
@@ -53,18 +51,23 @@ def scrape_elements(url, elements, depth=1, max_depth=2):
     # Scrape by tags
     for tag in elements['tags']:
         tag_elements = soup.find_all(tag)
-        scraped_data[tag] = [element.get_text(strip=True) for element in tag_elements]
+        # Use a set to store unique values and avoid duplicates
+        unique_text = set(element.get_text(strip=True) for element in tag_elements if element.get_text(strip=True))
+        scraped_data[tag] = list(unique_text)
 
     # Scrape by classes
     for class_name in elements['classes']:
         class_elements = soup.find_all(class_=class_name)
-        scraped_data[f'class:{class_name}'] = [element.get_text(strip=True) for element in class_elements]
+        unique_text = set(element.get_text(strip=True) for element in class_elements if element.get_text(strip=True))
+        scraped_data[f'class:{class_name}'] = list(unique_text)
 
     # Scrape by ids
     for id_name in elements['ids']:
         id_element = soup.find(id=id_name)
         if id_element:
-            scraped_data[f'id:{id_name}'] = id_element.get_text(strip=True)
+            text = id_element.get_text(strip=True)
+            if text:  # Only add if text is not empty
+                scraped_data[f'id:{id_name}'] = text
 
         # If depth allows, scrape nested pages
     if depth < max_depth:
